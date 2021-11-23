@@ -32,6 +32,7 @@ void createTable(vector<string> query_create){
     fout_table.close();
     cout<<"Table created successfully"<<endl;
     
+
     
     fout.open(table_name, std::ios_base::app);
 
