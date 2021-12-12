@@ -1,8 +1,5 @@
 #include<bits/stdc++.h>
- 
 #include<fstream>
-
-
 using namespace std;
 
 
@@ -11,12 +8,12 @@ void createTable(vector<string> query_create){
     //     cout<<i<<endl;
     // }
     ofstream fout, fout_table;
+
     fout.open("schema.txt",std::ios_base::app);
 
     cout<<endl;
     string table_name = query_create[2]+".txt";
     fout_table.open(table_name, std::ios_base::app);
-   
 
     for(int j = 3; j<query_create.size();j++){
         if(query_create[j] == "int"){
@@ -80,18 +77,17 @@ void describeTable(vector<string> query_describe){
     cout<<endl;
 
 }
-
 void insertValues(vector<string> query_describe){
-   
+
     string table_name = query_describe[2];
     string tname=query_describe[2]+".txt";
     ofstream insert_table;
     insert_table.open(tname,std::ios_base::app);
-    
-   
+
+
         if(insert_table){
            insert_table<<endl;
-        
+
             //insert_table<<endl;
             for(int i=5;i<query_describe.size()-2;i++){
              if(query_describe[i] != ",")
@@ -99,23 +95,21 @@ void insertValues(vector<string> query_describe){
              insert_table<<"#"<<query_describe[i];
              }
             }
-            
+
         }
 
-        
+
         else{
             cout<<"Table does not exists"<<endl;
             }
-        
-        
+
+
         insert_table.close();
     }
-    
-    
-   
+
 
 void select(vector<string> query_select){
-    
+
     bool all =false;
     if(query_select[1] ==  "*"){
         all = true;
@@ -130,7 +124,7 @@ void select(vector<string> query_select){
     for(int i =0;i < query_select.size();i++){
         if(query_select[i] == "from"){
             from_index =i;
-        }    
+        }
         if(query_select[i] == "where"){
             where_index = i;
         }
@@ -155,7 +149,7 @@ void select(vector<string> query_select){
                 string line;
                 getline(table, line);
                 cout.flush();
-                
+
                 stringstream ss(line);
 
                 while (ss.good()) {
@@ -212,19 +206,19 @@ void select(vector<string> query_select){
     //     condition.push_back(temp);
     //     temp.clear();
     // }
-    
+
         //condition.push_back(query_select[i]);
     }
     condition.push_back(temp);
 
-    // for(int i =0 ;i<condition.size();i++){    //print conditions 
+    // for(int i =0 ;i<condition.size();i++){    //print conditions
     //     for(int j =0;j<condition[i].size();j++){
     //         cout<<condition[i][j] <<" ";
 
     //     }
     //     cout<<endl;
     // }
-   
+
     // for(int i=0;i<condition.size();i++){
     //     cout<<condition[i]<<" ";
     // }
@@ -245,9 +239,9 @@ void select(vector<string> query_select){
             string table_path = table_name+".txt";
             ifstream table(table_path);
             cout<<endl;
-            
+
             if(table.good()){
-                   
+
                 int count =1;
                 int count1 =1;
                 vector<pair<string, int>> all_cols;
@@ -264,9 +258,9 @@ void select(vector<string> query_select){
                         tuple.push_back(substr);
                     }
 
-                    
 
-                    
+
+
                     if(count == 1){
                         for(int i =0;i<condition.size();i++){
 
@@ -276,22 +270,22 @@ void select(vector<string> query_select){
                                 }
                             }
                         }
-                        
+
                         if(all == false){
                             for(int i = 0;i<cols_name.size();i++){
                                 for(int i1 =0;i1<tuple.size();i1++){
                                    if(tuple[i1] == cols_name[i]){
                                        cols_index.push_back(i1);
-                                   } 
+                                   }
                                 }
                             }
                         }
                         count++;
-                    
+
                     }
-                    
-                    
-                    
+
+
+
 
 
                     // if(count == 1){
@@ -311,7 +305,7 @@ void select(vector<string> query_select){
                     //                 if(tuple[i1] == cols_name[i2]){
                     //                     //cout<<"i1 "<<i1<< endl;
                     //                     cols_index.push_back(i2);
-                    //                 }   
+                    //                 }
                     //             }
                     //         }
                     //         //all_cols.push_back(tuple[i1], i1);
@@ -322,7 +316,7 @@ void select(vector<string> query_select){
                     //     cout<<cols_index[i]<<" ";
                     // }
                     // cout<<endl;
-                   
+
                     if(all == true){                //printing column names
                         if(count1 == 1){
                         for(int i2 =0;i2 < cols_name.size();i2++){
@@ -341,13 +335,13 @@ void select(vector<string> query_select){
                                 count1++;
                         }
                     }
-                   
+
                     //cout<<condition[0].size();
                     int and_count = 0;
                     int or_count =0;
 
                     for(int j1 = 0;j1 < condition.size();j1++){
-                        
+
                         string oper = condition[j1][1];
                         string attr = condition[j1][0];
                         string value = condition[j1][2];
@@ -356,9 +350,9 @@ void select(vector<string> query_select){
                         if(all == true){
                             //cout<<andd;
                             if(andd == true){
-                                
+
                                 if(tuple[attr_indexes[j1]] == value){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< tuple.size();i2++){
                                         cout<<tuple[i2]<<"\t";
@@ -369,23 +363,23 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     //cout<<"\n"<<tuple[attr_indexes[j1]]<<" "<<value;
                                     if(tuple[attr_indexes[j1]] == value){
-                                        
+
                                                 for(int i2 = 0; i2< tuple.size();i2++){
                                                     cout<<tuple[i2]<<"\t";
                                                 }
-                                                cout<<endl; 
+                                                cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
-                                
+
                                 //cout<<or_count<<endl;
                             }
-                            
+
                             else{
                                 //cout<<tuple[attr_indexes[j1]]<<" "<<value<<endl;
                                 if(tuple[attr_indexes[j1]] == value){
@@ -396,12 +390,12 @@ void select(vector<string> query_select){
                                 }
                             }
 
-                           
+
                         }
                         else{
                              if(andd == true){
                                  if(tuple[attr_indexes[j1]] == value){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
@@ -412,17 +406,17 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     if(tuple[attr_indexes[j1]] == value){
-                                        
+
                                                for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
                                     }
                                     cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
                             }
                             else{
@@ -436,7 +430,7 @@ void select(vector<string> query_select){
 
 
 
-                            
+
                         }
 
                     }
@@ -449,9 +443,9 @@ void select(vector<string> query_select){
                         if(all == true){
                             //cout<<andd;
                             if(andd == true){
-                                
+
                                 if(tuple[attr_indexes[j1]] != value){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< tuple.size();i2++){
                                         cout<<tuple[i2]<<"\t";
@@ -462,23 +456,23 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     //cout<<"\n"<<tuple[attr_indexes[j1]]<<" "<<value;
                                     if(tuple[attr_indexes[j1]] != value){
-                                        
+
                                                 for(int i2 = 0; i2< tuple.size();i2++){
                                                     cout<<tuple[i2]<<"\t";
                                                 }
-                                                cout<<endl; 
+                                                cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
-                                
+
                                 //cout<<or_count<<endl;
                             }
-                            
+
                             else{
                                 //cout<<tuple[attr_indexes[j1]]<<" "<<value<<endl;
                                 if(tuple[attr_indexes[j1]] != value){
@@ -489,12 +483,12 @@ void select(vector<string> query_select){
                                 }
                             }
 
-                           
+
                         }
                         else{
                              if(andd == true){
                                  if(tuple[attr_indexes[j1]] != value){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
@@ -505,17 +499,17 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     if(tuple[attr_indexes[j1]] != value){
-                                        
+
                                                for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
                                     }
                                     cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
                             }
                             else{
@@ -529,7 +523,7 @@ void select(vector<string> query_select){
 
 
 
-                            
+
                         }
 
                     }
@@ -540,27 +534,27 @@ void select(vector<string> query_select){
                         double value1 =0 ;
                         double getValue = 0;
                         try{
-                        
+
                         decimal >> getValue;
                         decimal_value >> value1;
                         }
                         catch(exception e){
                             cout<<"error"<<endl;
                         }
-                        
-                        
-                        
+
+
+
                         if(getValue == 0 || value1 == 0){
                             break;
                         }
                             if(all == true){
                             //cout<<andd;
                             if(andd == true){
-                                
+
                                 if(getValue >= value1){
-                                    
+
                                     if(and_count == condition.size() -1 ){
-                                    for(int i2 = 0; i2< tuple.size();i2++){            // 1 
+                                    for(int i2 = 0; i2< tuple.size();i2++){            // 1
                                         cout<<tuple[i2]<<"\t";
                                     }
                                     cout<<endl;
@@ -569,23 +563,23 @@ void select(vector<string> query_select){
                                         and_count++;
                                     }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     //cout<<"\n"<<tuple[attr_indexes[j1]]<<" "<<value;
                                     if(getValue >= value1){
-                                        
+
                                                 for(int i2 = 0; i2< tuple.size();i2++){
                                                     cout<<tuple[i2]<<"\t";
                                                 }
-                                                cout<<endl; 
+                                                cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
-                                
+
                                 //cout<<or_count<<endl;
                             }
-                            
+
                             else{
                                 //cout<<tuple[attr_indexes[j1]]<<" "<<value<<endl;
                                 if(getValue >= value1){
@@ -596,12 +590,12 @@ void select(vector<string> query_select){
                                 }
                             }
 
-                           
+
                         }
                         else{
                              if(andd == true){
                                  if(getValue >= value1){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
@@ -612,17 +606,17 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     if(getValue >= value1){
-                                        
+
                                                for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
                                     }
                                     cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
                             }
                             else{
@@ -636,7 +630,7 @@ void select(vector<string> query_select){
 
 
 
-                            
+
                         }
                     }
                     else if(oper == "<="){
@@ -645,25 +639,25 @@ void select(vector<string> query_select){
                         double value1 =0 ;
                         double getValue = 0;
                         try{
-                        
+
                         decimal >> getValue;
                         decimal_value >> value1;
                         }
                         catch(exception e){
                             cout<<"error"<<endl;
                         }
-                        
-                        
-                        
+
+
+
                         if(getValue == 0 || value1 == 0){
                             break;
                         }
                             if(all == true){
                             //cout<<andd;
                             if(andd == true){
-                                
+
                                 if(getValue <= value1){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< tuple.size();i2++){
                                         cout<<tuple[i2]<<"\t";
@@ -674,23 +668,23 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     //cout<<"\n"<<tuple[attr_indexes[j1]]<<" "<<value;
                                     if(getValue <= value1){
-                                        
+
                                                 for(int i2 = 0; i2< tuple.size();i2++){
                                                     cout<<tuple[i2]<<"\t";
                                                 }
-                                                cout<<endl; 
+                                                cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
-                                
+
                                 //cout<<or_count<<endl;
                             }
-                            
+
                             else{
                                 //cout<<tuple[attr_indexes[j1]]<<" "<<value<<endl;
                                 if(getValue <= value1){
@@ -701,12 +695,12 @@ void select(vector<string> query_select){
                                 }
                             }
 
-                           
+
                         }
                         else{
                              if(andd == true){
                                  if(getValue <= value1){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
@@ -717,17 +711,17 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     if(getValue <= value1){
-                                        
+
                                                for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
                                     }
                                     cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
                             }
                             else{
@@ -741,36 +735,36 @@ void select(vector<string> query_select){
 
 
 
-                            
+
                         }
 
                     }
-                    
+
                     else if(oper == ">"){
                          stringstream decimal(tuple[attr_indexes[j1]]);
                         stringstream decimal_value(value);
                         double value1 =0 ;
                         double getValue = 0;
                         try{
-                        
+
                         decimal >> getValue;
                         decimal_value >> value1;
                         }
                         catch(exception e){
                             cout<<"error"<<endl;
                         }
-                        
-                        
-                        
+
+
+
                         if(getValue == 0 || value1 == 0){
                             break;
                         }
                             if(all == true){
                             //cout<<andd;
                             if(andd == true){
-                                
+
                                 if(getValue > value1){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< tuple.size();i2++){
                                         cout<<tuple[i2]<<"\t";
@@ -781,23 +775,23 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     //cout<<"\n"<<tuple[attr_indexes[j1]]<<" "<<value;
                                     if(getValue > value1){
-                                        
+
                                                 for(int i2 = 0; i2< tuple.size();i2++){
                                                     cout<<tuple[i2]<<"\t";
                                                 }
-                                                cout<<endl; 
+                                                cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
-                                
+
                                 //cout<<or_count<<endl;
                             }
-                            
+
                             else{
                                 //cout<<tuple[attr_indexes[j1]]<<" "<<value<<endl;
                                 if(getValue > value1){
@@ -808,12 +802,12 @@ void select(vector<string> query_select){
                                 }
                             }
 
-                           
+
                         }
                         else{
                              if(andd == true){
                                  if(getValue > value1){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
@@ -824,17 +818,17 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     if(getValue > value1){
-                                        
+
                                                for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
                                     }
                                     cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
                             }
                             else{
@@ -848,7 +842,7 @@ void select(vector<string> query_select){
 
 
 
-                            
+
                         }
 
                     }
@@ -858,25 +852,25 @@ void select(vector<string> query_select){
                         double value1 =0 ;
                         double getValue = 0;
                         try{
-                        
+
                         decimal >> getValue;
                         decimal_value >> value1;
                         }
                         catch(exception e){
                             cout<<"error"<<endl;
                         }
-                        
-                        
-                        
+
+
+
                         if(getValue == 0 || value1 == 0){
                             break;
                         }
                             if(all == true){
                             //cout<<andd;
                             if(andd == true){
-                                
+
                                 if(getValue < value1){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< tuple.size();i2++){
                                         cout<<tuple[i2]<<"\t";
@@ -887,23 +881,23 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     //cout<<"\n"<<tuple[attr_indexes[j1]]<<" "<<value;
                                     if(getValue < value1){
-                                        
+
                                                 for(int i2 = 0; i2< tuple.size();i2++){
                                                     cout<<tuple[i2]<<"\t";
                                                 }
-                                                cout<<endl; 
+                                                cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
-                                
+
                                 //cout<<or_count<<endl;
                             }
-                            
+
                             else{
                                 //cout<<tuple[attr_indexes[j1]]<<" "<<value<<endl;
                                 if(getValue < value1){
@@ -914,12 +908,12 @@ void select(vector<string> query_select){
                                 }
                             }
 
-                           
+
                         }
                         else{
                              if(andd == true){
                                  if(getValue < value1){
-                                    
+
                                     if(and_count == condition.size() -1 ){
                                     for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
@@ -930,17 +924,17 @@ void select(vector<string> query_select){
                                     and_count++;
                                 }
                                 }
-                            }  
+                            }
                             else if(orr == true){
                                     if(getValue < value1){
-                                        
+
                                                for(int i2 = 0; i2< cols_index.size();i2++){
                                         cout<<tuple[cols_index[i2]]<<"\t";
                                     }
                                     cout<<endl;
                                                 break;
-                                           
-                                    
+
+
                                 }
                             }
                             else{
@@ -954,29 +948,61 @@ void select(vector<string> query_select){
 
 
 
-                            
+
                         }
 
 
                     }
                     }
 
-                
-                
-                
-                
+
+
+
+
                 }
 
             }
-    
-    
-    
 
-    
+
+
+
+
     }
 
 
+void update(vector<string> query_delete){
 
+string data,d2;
+fstream table(query_delete[2]+".txt");
+
+if(table.is_open()){
+getline (table,data);
+vector<string> fields;
+string str="";
+for(int i=0;i<data.length();i++){
+      if(data[i]!='#'){
+        str=str+data[i];
+        }
+        if(data[i]=='#' && str!="" || i==data.length()-1){
+        fields.push_back(str);
+        str="";
+       }
+       }
+       int field_length=fields.size();
+       
+
+
+
+ 
+  
+table.close();
+}
+else{
+   cout<<"Table does not exist";
+
+}
+
+}
 
 int main(){
 
@@ -1000,18 +1026,17 @@ int main(){
         }
         else if(query[0] == "describe"){
             describeTable(query);
-        }
-
-        else if(query[0] == "insert"){
+            }
+         else if(query[0] == "insert"){
             insertValues(query);
         }
-
         else if(query[0] ==  "select"){
             select(query);
             cout<<endl;
         }
-
-
+        else if(query[0] == "update"){
+             update(query);
+        }
 
         query.clear();
         string a;
@@ -1026,10 +1051,7 @@ int main(){
         }
 
     }
-
-
-
-    return 0;
+return 0;
 
 
 }
