@@ -109,14 +109,14 @@ void insertValues(vector<string> query_describe){
 
 
 void select(vector<string> query_select){
-
+    
     bool all =false;
     if(query_select[1] ==  "*"){
         all = true;
     }
     vector<string> cols_name;
     vector<string> table_names;
-
+    
     int from_index;
     int where_index;
     int end_index;
@@ -970,10 +970,11 @@ void select(vector<string> query_select){
     }
 
 
-void update(vector<string> query_delete){
+void update(vector<string> query_update){
 
-string data,d2;
-fstream table(query_delete[2]+".txt");
+string data,data2;
+vector<vector<string>> tuple;
+fstream table(query_update[1]+".txt");
 
 if(table.is_open()){
 getline (table,data);
@@ -989,11 +990,39 @@ for(int i=0;i<data.length();i++){
        }
        }
        int field_length=fields.size();
-       
-
-
-
- 
+       //cout<<field_length;
+       int num_rows=0;
+       while(!table.eof()){
+        getline(table,data2);
+        stringstream row(data2);
+        vector<string> values;
+        string substr;
+        while (getline(row,substr,'#'))
+           
+         { 
+         
+           values.push_back(substr);
+         }
+         values.erase(values.begin()); 
+         //for(int i=0;i<values.size();i++){
+           // cout<<values[i]<<" ";
+        // }
+          
+         tuple.push_back(values);
+         for(int i=0;i<values.size();i++){
+           // cout<<tuple[num_rows][i]<<" ";
+         }
+         num_rows++;
+         }
+         //cout<<num_rows;
+         for(int i=0;i<num_rows;i++){
+            for(int j=0;j<field_length;j++){
+              cout<<tuple[i][j]<<" ";
+            }
+         
+            cout<<endl;
+         }
+   
   
 table.close();
 }
@@ -1004,6 +1033,104 @@ else{
 
 }
 
+void helpp(vector<string> query_help){
+ 
+
+ if(query_help[1]=="tables"){
+ ifstream schema("schema.txt");
+ set<string> check;
+ if(schema){
+ while(!schema.eof()){
+   string data,tables="";
+   getline(schema,data);
+   for(int i=0;i<data.length();i++){
+    if(data[i]=='#'){
+        break;
+    }
+    tables=tables+data[i];
+   }
+   check.insert(tables); 
+   
+    } 
+    for(auto i:check){
+        cout<<i<<endl;
+    }
+    schema.close();
+}
+  else{
+   cout<<"NO Tables found";
+  }
+ }
+ else{
+    if(query_help[1]=="create"){
+     cout<<"This statement is used to create tables in sql.\n\n";
+     cout<<"It is used in the following way as given below.\n\n";
+     cout<<"create table table_name (attr1 , attr1 type , attr2 , attr2 type..) ; \n";
+
+    }
+
+    else if(query_help[1]=="drop"){
+    cout<<"This statement is used to drop the tables from the sql.\n\n";
+    cout<<"It is used in the following way as given below.\n\n";
+    cout<<"drop table table_name ;\n";
+    }
+    else if(query_help[1]=="select"){
+    cout<<"This statement is used to select tuples from tables with specified conditions in sql.\n\n";
+    cout<<"It is used in the following way as given below.\n\n";
+    cout<<"select attribute_list from table _list where condition_list ; \n"; 
+    }
+     else if(query_help[1]=="insert"){
+     cout<<"This statement is used to insert data into the tables in sql.\n\n";
+     cout<<"It is used in the following way as given below.\n\n";
+     cout<<"insert into table_name values (val1 , val2 ,... ); \n";
+     }
+     else if(query_help[1]=="delete"){
+     cout<<"This statement is used to delete tables in sql.\n\n";
+     cout<<"It is used in the following way as given below.\n\n";
+     cout<<"delete from table_name where condition_list ; \n";
+     }
+     else if(query_help[1]=="update"){
+      cout<<"This statement is used to update the values in the table in sql.\n\n";
+     cout<<"It is used in the following way as given below.\n\n";
+     cout<<"update table_name set attr1 = val1 ,attr2 = val2 where condition_list ; \n";
+     }
+
+ } 
+
+ 
+
+
+} 
+
+void drop(vector<string> drop_query){
+
+string table=drop_query[1];
+string table_name=table+".txt";
+const char *table_names = table_name.c_str();
+remove(table_names);
+ofstream fout;
+fout.open("temp.txt",std::ios_base::app);
+ifstream schema("schema.txt");
+while(schema){
+    string data,temp="";
+    getline(schema,data);
+    for(int i=0;i<data.length();i++){
+        if(data[i]=='#')
+            break;
+        temp=temp+data[i];
+    }
+    if(temp!=table){
+        fout<<data;
+    } 
+    fout<<endl;
+} 
+schema.close();
+string schema_path="schema.txt";
+const char *schema1 = schema_path.c_str();
+remove(schema1);
+fout.close();
+rename("temp.txt","schema.txt"); 
+}
 int main(){
 
     // system("CLS");
@@ -1036,6 +1163,12 @@ int main(){
         }
         else if(query[0] == "update"){
              update(query);
+        } 
+        else if(query[0] == "help"){
+            helpp(query);
+        }
+        else if(query[0] == "drop"){
+            drop(query);
         }
 
         query.clear();
