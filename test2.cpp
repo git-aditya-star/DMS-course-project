@@ -1,5 +1,6 @@
 #include<bits/stdc++.h>
 #include<fstream>
+#include<stdio.h>
 using namespace std;
 
 
@@ -95,6 +96,8 @@ void insertValues(vector<string> query_describe){
              insert_table<<"#"<<query_describe[i];
              }
             }
+
+            cout<<"Data Inserted"<<endl;
 
         }
 
@@ -1098,6 +1101,7 @@ void deleteValue(vector<string> query_select){
      string table_name = table_names[0];
             string table_path = table_name+".txt";
             ifstream table(table_path);
+
             cout<<endl;
 
             if(table.good()){
@@ -2018,6 +2022,9 @@ int main(){
         }
         else if(query[0] == "drop"){
             drop(query);
+
+            cout<<endl;
+
         }
 
         query.clear();
