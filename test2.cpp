@@ -112,14 +112,14 @@ void insertValues(vector<string> query_describe){
 
 
 void select(vector<string> query_select){
-
+    
     bool all =false;
     if(query_select[1] ==  "*"){
         all = true;
     }
     vector<string> cols_name;
     vector<string> table_names;
-
+    
     int from_index;
     int where_index;
     int end_index;
@@ -1101,6 +1101,7 @@ void deleteValue(vector<string> query_select){
      string table_name = table_names[0];
             string table_path = table_name+".txt";
             ifstream table(table_path);
+
             cout<<endl;
 
             if(table.good()){
@@ -1563,7 +1564,9 @@ void deleteValue(vector<string> query_select){
 void update(vector<string> query_update){
 
 string data,data2;
+int set_index,where_index,end_index;
 vector<vector<string>> tuple;
+ofstream fout;
 fstream table(query_update[1]+".txt");
 
 if(table.is_open()){
@@ -1605,16 +1608,273 @@ for(int i=0;i<data.length();i++){
          num_rows++;
          }
          //cout<<num_rows;
-         for(int i=0;i<num_rows;i++){
-            for(int j=0;j<field_length;j++){
-              cout<<tuple[i][j]<<" ";
-            }
-         
-            cout<<endl;
+         //for(int i=0;i<num_rows;i++){
+            //for(int j=0;j<field_length;j++)
+               // cout<<tuple[i][j]<<" ";
+            //cout<<endl;
+
+        // }
+         for(int i=0;i<query_update.size();i++){
+        if(query_update[i]=="set")
+            set_index=i;
+        else if(query_update[i]=="where")
+            where_index=i;
+        else if(query_update[i]==";")
+             end_index=i;
+
          }
-   
-  
-table.close();
+
+       map<int,vector<string>> attributes;
+       vector<pair<int,vector<string>>> conditions;
+       int c_index=set_index+1;
+       bool exec=true;
+
+       for(int i=set_index+1;i<where_index;i++){
+        int col_num;
+        if(exec){
+        for(int j=0;j<fields.size();j++){
+            if(fields[j]==query_update[c_index]){
+                col_num=j;
+                exec=false;
+                break;
+            }
+            }
+        }
+       if(query_update[i]!=","){
+        attributes[col_num].push_back(query_update[i]);
+        } 
+        
+       if(query_update[i] == "," || i==where_index-1){
+           exec=true;
+           c_index+=4;
+                   
+         } 
+                           
+         }
+         //for(auto i:attributes){
+           // cout<<i.first<<" ";
+            //for(auto j :i.second)
+               // cout<<j<<" ";
+            //cout<<endl;
+       // }
+        exec=true;
+        pair<int,vector<string>> p;
+        vector<string> v;
+        for(int i=where_index+1;i<end_index;i++){
+        int col_num;
+        if(exec){
+        for(int j=0;j<fields.size();j++){
+            if(fields[j]==query_update[c_index]){
+                col_num=j;
+                exec=false;
+                break;
+            }
+            }
+        }
+       if(query_update[i]!="and" && query_update[i]!="or"){
+        v.push_back(query_update[i]);
+        } 
+        //for(auto k:v){
+            //cout<<k<<" ";
+        //}
+        if(query_update[i] == "and" || query_update[i]=="or" || i==end_index-1){
+        
+        p=make_pair(col_num,v);
+       
+        conditions.push_back(p);
+           
+           exec=true;
+           c_index+=4;
+           v.clear();
+                         
+         } 
+                           
+         }
+         //for(auto i:conditions){
+            //cout<< i.first<<" ";
+            //for(auto j:i.second){
+              //  cout<<j<<" ";
+           // }
+           // cout<<endl;
+        // }
+        string condition; 
+       if(where_index+4 != end_index){  
+       condition=query_update[where_index+4];
+       }
+       else{
+        condition="none";
+       } 
+        
+       
+      if(condition=="and"|| condition=="none"){
+       for(int i=0;i<num_rows;i++){
+        bool check=true;
+        for(auto j:conditions){
+            bool flag=false;
+            int co_index=j.first;
+            //cout<<co_index<<endl;
+            //cout<<tuple[i][co_index];
+            if(j.second[1]=="="){
+              if(tuple[i][co_index]==j.second[2]){
+               flag=true;
+              } 
+            }
+            else if(j.second[1]=="!="){
+             if(tuple[i][co_index]!=j.second[2]){
+               flag=true;
+              }  
+            }
+            else if(j.second[1]==">"){
+                int x=stoi(tuple[i][co_index]);
+                int y=stoi(j.second[2]);
+                if(x>y){
+                    flag=true;
+                }
+            }
+            else if(j.second[1]==">="){
+                int x=stoi(tuple[i][co_index]);
+                int y=stoi(j.second[2]);
+                if(x>=y){
+                    flag=true;
+                }
+            }
+            else if(j.second[1]=="<"){
+                int x=stoi(tuple[i][co_index]);
+                int y=stoi(j.second[2]);
+                if(x<y){
+                    flag=true;
+                }
+            } 
+
+            else if(j.second[1]=="<="){
+                int x=stoi(tuple[i][co_index]);
+                int y=stoi(j.second[2]);
+                if(x<=y){
+                    flag=true;
+                }
+            } 
+
+            //cout<<flag<<" ";
+            if(flag==false){
+                check=false;
+                break;
+               }
+
+        } 
+        
+        //cout<<check<<endl;
+        if(check==true){
+         for(auto it:attributes){
+            int index=it.first;
+            tuple[i][index]=it.second[2];
+
+         } 
+
+        }
+        
+         } 
+          for(int i=0;i<num_rows;i++){
+            for(int j=0;j<field_length;j++)
+               cout<<tuple[i][j]<<" ";
+            cout<<endl;
+
+         }
+       }   
+              
+       else if(condition=="or"){ 
+        for(int i=0;i<num_rows;i++){
+         bool check=false;   
+        for(auto j:conditions){
+            bool flag=false;
+            int co_index=j.first;
+            //cout<<co_index<<endl;
+            //cout<<tuple[i][co_index];
+            if(j.second[1]=="="){
+              if(tuple[i][co_index]==j.second[2]){
+               flag=true;
+              } 
+            }
+            else if(j.second[1]=="!="){
+             if(tuple[i][co_index]!=j.second[2]){
+               flag=true;
+              }  
+            }
+            else if(j.second[1]==">"){
+                int x=stoi(tuple[i][co_index]);
+                int y=stoi(j.second[2]);
+                if(x>y){
+                    flag=true;
+                }
+            }
+            else if(j.second[1]==">="){
+                int x=stoi(tuple[i][co_index]);
+                int y=stoi(j.second[2]);
+                if(x>=y){
+                    flag=true;
+                }
+            }
+            else if(j.second[1]=="<"){
+                int x=stoi(tuple[i][co_index]);
+                int y=stoi(j.second[2]);
+                if(x<y){
+                    flag=true;
+                }
+            } 
+
+            else if(j.second[1]=="<="){
+                int x=stoi(tuple[i][co_index]);
+                int y=stoi(j.second[2]);
+                if(x<=y){
+                    flag=true;
+                }
+            } 
+
+            //cout<<flag<<" ";
+      
+            if(flag==true){
+            for(auto it:attributes){
+            int index=it.first;
+            tuple[i][index]=it.second[2];
+            //cout<<tuple[i][index];
+               }
+
+        } 
+        
+        //cout<<check<<endl;
+        //if(check==true){
+         //for(auto it:attributes){
+         //   int index=it.first;
+          //  tuple[i][index]=it.second[2]; 
+        // } 
+
+        }
+        
+         } 
+         
+         for(int i=0;i<num_rows;i++){
+            for(int j=0;j<field_length;j++)
+                cout<<tuple[i][j]<<" ";
+            cout<<endl;
+        }
+       }
+       fout.open("temp.txt",std::ios_base::app);
+       for(int i=0;i<field_length;i++){
+        fout<<"#"<<fields[i];
+       }
+       fout<<endl;
+       for(int i=0;i<num_rows;i++){
+            for(int j=0;j<field_length;j++)
+                fout<<"#"<<tuple[i][j];
+            if(i!=num_rows-1)
+                fout<<endl;
+        }
+        fout.close();
+        table.close();
+        string table_name=query_update[1]+".txt";
+        const char *table = table_name.c_str();
+        remove(table);
+        rename("temp.txt",table);
+       
 }
 else{
    cout<<"Table does not exist";
@@ -1721,7 +1981,6 @@ remove(schema1);
 fout.close();
 rename("temp.txt","schema.txt"); 
 }
-
 int main(){
 
     // system("CLS");
@@ -1747,7 +2006,6 @@ int main(){
             }
          else if(query[0] == "insert"){
             insertValues(query);
-            cout<<endl;
         }
         else if(query[0] ==  "select"){
             select(query);
@@ -1758,15 +2016,15 @@ int main(){
         }
         else if(query[0] == "delete"){
             deleteValue(query);
-            cout<<endl;
-        }
+        } 
         else if(query[0] == "help"){
             helpp(query);
-            cout<<endl;
         }
         else if(query[0] == "drop"){
             drop(query);
+
             cout<<endl;
+
         }
 
         query.clear();
