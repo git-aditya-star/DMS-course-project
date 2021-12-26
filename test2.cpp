@@ -30,7 +30,7 @@ void createTable(vector<string> query_create){
             fout_table<<query_create[j-1]<<"#";
         }
     }
-    fout_table<<endl;
+    
     fout.close();
     fout_table.close();
     cout<<"Table created successfully"<<endl;
@@ -90,14 +90,14 @@ void insertValues(vector<string> query_describe){
         if(insert_table){
           // 
 
-            //insert_table<<endl;
+            insert_table<<endl;
             for(int i=5;i<query_describe.size()-2;i++){
              if(query_describe[i] != ",")
              {
              insert_table<<"#"<<query_describe[i];
              }
             }
-            insert_table<<endl;
+           // insert_table<<endl;
             cout<<"Data Inserted"<<endl;
 
         }
@@ -124,6 +124,7 @@ void select(vector<string> query_select){
     int from_index;
     int where_index;
     int end_index;
+    
 
     for(int i =0;i < query_select.size();i++){
         if(query_select[i] == "from"){
@@ -131,11 +132,14 @@ void select(vector<string> query_select){
         }
         if(query_select[i] == "where"){
             where_index = i;
+            
         }
         if(query_select[i] == ";"){
             end_index = i;
         }
     }
+    
+
 
     for(int i = from_index+1; i<where_index;i++){
         if(query_select[i] != ","){
@@ -179,6 +183,8 @@ void select(vector<string> query_select){
             }
         }
     }
+
+   
 
     // for(int i =0;i<table_names.size();i++){
     //     cout<<table_names[i]<<" ";
@@ -237,8 +243,7 @@ void select(vector<string> query_select){
     // string value = condition[2];
 
     vector<int> cols_index;
-
-
+ 
      string table_name = table_names[0];
             string table_path = table_name+".txt";
             ifstream table(table_path);
@@ -339,6 +344,7 @@ void select(vector<string> query_select){
                                 count1++;
                         }
                     }
+                    
 
                     //cout<<condition[0].size();
                     int and_count = 0;
@@ -988,7 +994,7 @@ void deleteValue(vector<string> query_select){
                 table.close();
                 ofstream temporary;
                 temporary.open("temp.txt");
-                temporary<<line<<endl;
+                temporary<<line;
                 temporary.close();
                 char new_name[table_path.length()] ;
                 strcpy(new_name, table_path.c_str());
