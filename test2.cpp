@@ -121,9 +121,9 @@ void select(vector<string> query_select){
     vector<string> cols_name;
     vector<string> table_names;
     
-    int from_index;
-    int where_index;
-    int end_index;
+    int from_index =-1;
+    int where_index= -1;
+    int end_index= -1;
     
 
     for(int i =0;i < query_select.size();i++){
@@ -139,7 +139,11 @@ void select(vector<string> query_select){
         }
     }
     
+    if(where_index ==  -1 || from_index == -1 || end_index == -1){
+        cout<<"Invalid Syntax"<<endl;
+        return ;
 
+    }
 
     for(int i = from_index+1; i<where_index;i++){
         if(query_select[i] != ","){
@@ -1021,9 +1025,9 @@ void deleteValue(vector<string> query_select){
     vector<string> cols_name;
     vector<string> table_names;
 
-    int from_index;
-    int where_index;
-    int end_index;
+    int from_index =-1;
+    int where_index = -1;
+    int end_index =-1;
 
     for(int i =0;i < query_select.size();i++){
         if(query_select[i] == "from"){
@@ -1035,6 +1039,12 @@ void deleteValue(vector<string> query_select){
         if(query_select[i] == ";"){
             end_index = i;
         }
+    }
+
+    if(where_index ==  -1 || from_index == -1 || end_index == -1){
+        cout<<"Invalid Syntax"<<endl;
+        return ;
+
     }
 
     for(int i = from_index+1; i<where_index;i++){
@@ -2038,9 +2048,10 @@ int main(){
     }
 
     while(query[0] != "quit"){
-
-
-        if(query[0] == "create"){
+        if(query[query.size() -1] != ";"){
+            cout<<"semicolon missing"<<endl<<endl;
+        }
+        else if(query[0] == "create"){
             createTable(query);
             cout<<endl;
         }
@@ -2073,6 +2084,9 @@ int main(){
 
             cout<<endl;
 
+        }
+        else{
+            cout<<"Invalid Syntax"<<endl<<endl;
         }
 
         query.clear();
