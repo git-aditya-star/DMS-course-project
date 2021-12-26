@@ -30,6 +30,7 @@ void createTable(vector<string> query_create){
             fout_table<<query_create[j-1]<<"#";
         }
     }
+    fout_table<<endl;
     fout.close();
     fout_table.close();
     cout<<"Table created successfully"<<endl;
@@ -87,7 +88,7 @@ void insertValues(vector<string> query_describe){
 
 
         if(insert_table){
-           insert_table<<endl;
+          // 
 
             //insert_table<<endl;
             for(int i=5;i<query_describe.size()-2;i++){
@@ -96,7 +97,7 @@ void insertValues(vector<string> query_describe){
              insert_table<<"#"<<query_describe[i];
              }
             }
-
+            insert_table<<endl;
             cout<<"Data Inserted"<<endl;
 
         }
@@ -973,6 +974,41 @@ void select(vector<string> query_select){
     }
 
 void deleteValue(vector<string> query_select){
+
+    if(query_select.size()==4){
+
+        string table_name = query_select[2];
+        string table_path = table_name+".txt";
+            ifstream table(table_path);
+            cout<<endl;
+            if(table.good()){
+                string line;
+                getline(table, line);
+                cout.flush();
+                table.close();
+                ofstream temporary;
+                temporary.open("temp.txt");
+                temporary<<line<<endl;
+                temporary.close();
+                char new_name[table_path.length()] ;
+                strcpy(new_name, table_path.c_str());
+                int status;
+
+                status = remove(new_name);
+        
+                int value;
+                value = rename("temp.txt" , new_name);
+
+            }
+            else{
+                cout<<"Table does not exists"<<endl;
+                return ;
+
+            }
+            return ;
+
+    }
+
 
     bool all =true;
     
