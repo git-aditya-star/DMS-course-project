@@ -1,0 +1,8 @@
+t1#name#char(20)
+t1#age#int
+t1#roll#int
+t2#cgpa#decimal
+t2#ph#int
+
+
+new#name#char

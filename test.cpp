@@ -997,13 +997,16 @@ int main(){
 
         if(query[0] == "create"){
             createTable(query);
+            cout<<endl;
         }
         else if(query[0] == "describe"){
             describeTable(query);
+            cout<<endl;
         }
 
         else if(query[0] == "insert"){
             insertValues(query);
+            cout<<endl;
         }
 
         else if(query[0] ==  "select"){
